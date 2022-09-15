@@ -1,0 +1,13 @@
+# Machine learning (Apple Silicon).
+# tensorflow
+tensorflow-macos
+tensorflow-metal
+tensorflow-datasets
+git+https://github.com/tensorflow/exampls.git
+# Images.
+Pillow
+# Data & visualization.
+matplotlib
+numpy
+pandas
+pydot
