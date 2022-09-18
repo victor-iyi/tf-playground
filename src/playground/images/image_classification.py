@@ -117,20 +117,20 @@ def visualize_train_history(
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
-    epoch_range = range(epochs)
+    # epoch_range = range(epochs)
     plt.figure(figsize=figsize)
 
     # Training & validation accuracy.
     plt.subplot(1, 2, 1)
-    plt.plot(epoch_range, acc, label='Training Accuracy')
-    plt.plot(epoch_range, val_acc, label='Validation Accuracy')
+    plt.plot(history.epoch, acc, label='Training Accuracy')
+    plt.plot(history.epoch, val_acc, label='Validation Accuracy')
     plt.legend(loc='lower right')
     plt.title('Training & Validation Accuracy')
 
     # Training & validation loss.
     plt.subplot(1, 2, 2)
-    plt.plot(epoch_range, loss, label='Training Loss')
-    plt.plot(epoch_range, val_loss, label='Validation Loss')
+    plt.plot(history.epoch, loss, label='Training Loss')
+    plt.plot(history.epoch, val_loss, label='Validation Loss')
     plt.legend(loc='lower left')
     plt.title('Training & Validation Loss')
 
