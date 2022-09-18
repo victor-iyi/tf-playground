@@ -181,9 +181,28 @@ def unet_model(
     return tf.keras.Model(inputs=inputs, outputs=x)
 
 
+# TODO(victor): Double check `history` type.
+def plot_train_history(history: tf.keras.callbacks.History) -> None:
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    plt.figure()
+    plt.title('Training and Validation Loss')
+
+    plt.plot(history.epoch, loss, 'r', label='Training Loss')
+    plt.plot(history.epoch, val_loss, 'bo', label='Validation Loss')
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss value')
+    plt.ylim([0, 1])
+
+    plt.legend()
+    plt.show()
+
+
 def main() -> int:
     train_batches = load_data(train=True)
-    # test_batches = load_data(train=False)
+    test_batches = load_data(train=False)
 
     for images, masks in train_batches.take(2):
         sample_image, sample_mask = images[0], masks[0]
@@ -199,19 +218,28 @@ def main() -> int:
     # tf.keras.utils.plot_model(model, show_shapes=True)
     model.summary()
 
-    def show_predictions(
-        dataset: tf.dataset.Dataset | None = None,
-        num: int = 1
-    ) -> None:
-        if dataset:
-            for image, mask in dataset.take(num):
-                pred_mask = model.predict(image)
-                display([image[0], mask[0], create_mask(pred_mask)])
-        else:
-            display([sample_image, sample_mask,
-                    create_mask(model.predict(sample_image[tf.newaxis, ...]))])
+    # Train model.
+    history = model.fit(
+        train_batches, epochs=EPOCHS,
+        steps_per_epoch=STEPS_PER_EPOCH,
+        validation_data=test_batches,
+        validation_steps=VAL_STEPS,
+    )
 
-    show_predictions()
+    plot_train_history(history)
+
+    # def show_predictions(
+    #     dataset: tf.dataset.Dataset | None = None,
+    #     num: int = 1
+    # ) -> None:
+    #     if dataset:
+    #         for image, mask in dataset.take(num):
+    #             pred_mask = model.predict(image)
+    #             display([image[0], mask[0], create_mask(pred_mask)])
+    #     else:
+    #         pred_mask = model.predict(sample_image[tf.newaxis, ...])
+    #         display([sample_image, sample_mask, create_mask(pred_mask)])
+    # show_predictions()
 
     return 0
 
