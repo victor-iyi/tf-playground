@@ -9,5 +9,4 @@ Pillow
 # Data & visualization.
 matplotlib
 numpy
-pandas
 pydot
