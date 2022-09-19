@@ -15,11 +15,10 @@
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tensorflow_examples.models.pix2pix import pix2pix
 
 
 dataset, info = tfds.load(
-    'oxford_iiit_pet:3.*.*', data_dir='../../data/', with_info=True
+    'oxford_iiit_pet:3.*.*', data_dir='../../../data/', with_info=True
 )
 
 IMG_HEIGHT, IMG_WIDTH, IMG_CHANNEL = 128, 128, 3
@@ -113,8 +112,8 @@ def display(images: list[tf.TensorArray]) -> None:
 
 
 def create_mask(pred_mask: tf.TensorArray) -> tf.TensorArray:
-    # pred_mask = tf.math.argmax(pred_mask, axis=-1)
-    # pred_mask = pred_mask[..., tf.newaxis]
+    pred_mask = tf.math.argmax(pred_mask, axis=-1)
+    pred_mask = pred_mask[..., tf.newaxis]
     return pred_mask[0]
 
 
