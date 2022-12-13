@@ -2,7 +2,7 @@ import tensorflow as tf
 
 
 def load_data() -> tuple[
-    tuple[tf.Tensor, tf.Tensor], tuple[tf.Tensor, tf.Tensor]
+    tuple[tf.Tensor, tf.Tensor], tuple[tf.Tensor, tf.Tensor],
 ]:
     """Load the mnist dataset
 
@@ -28,7 +28,7 @@ def build_model(
         tf.keras.layers.Flatten(input_shape=input_shape),
         tf.keras.layers.Dense(units, activation=activation),
         tf.keras.layers.Dropout(dropout),
-        tf.keras.layers.Dense(n_classes)
+        tf.keras.layers.Dense(n_classes),
     ])
 
     return model
@@ -62,7 +62,7 @@ def main() -> int:
 
     probability_model = tf.keras.models.Sequential([
         model,
-        tf.keras.layers.Softmax()
+        tf.keras.layers.Softmax(),
     ])
 
     predictions = probability_model(x_test[:5])

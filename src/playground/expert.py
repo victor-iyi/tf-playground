@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import tensorflow as tf
 
 EPOCHS, LEARNING_RATE = 5, 1e-3
@@ -64,7 +63,7 @@ class Model(tf.keras.Model):
     def call(
         self,
         x: tf.TensorArray,
-        training: bool = False
+        training: bool = False,
     ) -> tf.TensorArray:
         for layer in self.conv_layers:
             x = layer(x)
