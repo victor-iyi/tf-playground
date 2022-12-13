@@ -110,10 +110,10 @@ warn_return_any = true
 warn_unreachable = true
 
 # Pyright Type Checking.
-# [tool.pyright]
-# reportOptionalCall = "none"
-# reportGeneralTypeIssues = "none"
-# reportOptionalMemberAccess = "none"
+[tool.pyright]
+reportOptionalCall = "none"
+reportGeneralTypeIssues = "none"
+reportOptionalMemberAccess = "none"
 
 # Coverage report.
 [tool.coverage.report]
