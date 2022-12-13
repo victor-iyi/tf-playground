@@ -34,7 +34,7 @@ and `model.fit`.
 
 - [ ] **ML basics with Keras**
 
-  - [ ] Basic image classification
+  - [x] Basic image classification
   - [ ] Basic text classification
   - [ ] Text classification with TF Hub
   - [ ] Regression
