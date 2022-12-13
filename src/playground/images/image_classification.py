@@ -11,18 +11,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import os
 import pathlib
+
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 
-DATA_URL = ('https://storage.googleapis.com/download.tensorflow.org/'
-            'example_images/flower_photos.tgz')
-SUNFLOWER_URL = ('https://storage.googleapis.com/download.tensorflow.org/'
-                 'example_images/592px-Red_sunflower.jpg')
+DATA_URL = (
+    'https://storage.googleapis.com/download.tensorflow.org/'
+    'example_images/flower_photos.tgz'
+)
+SUNFLOWER_URL = (
+    'https://storage.googleapis.com/download.tensorflow.org/'
+    'example_images/592px-Red_sunflower.jpg'
+)
 TF_LITE_MODEL_PATH = '../../saved_models/flower-classifier.tflite'
 CLASS_NAMES = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
 IMG_WIDTH, IMG_HEIGHT, IMG_CHANNEL = 512, 512, 3
@@ -89,7 +93,7 @@ def visualize_data(
 
     for img, label in dataset.take(1):
         for i in range(9):
-            ax = plt.subplot(3, 3, i + 1)
+            plt.subplot(3, 3, i + 1)
             plt.imshow(img[i].numpy().astype('uint8'))
             plt.title(class_names[label[i]])
             plt.axis('off')
@@ -141,8 +145,10 @@ class DataAugmentation(tf.keras.layers.Layer):
 
     def __init__(
         self,
-        input_shape: tuple[int, int, int] = (IMG_HEIGHT, IMG_WIDTH,
-                                             IMG_CHANNEL),
+        input_shape: tuple[int, int, int] = (
+            IMG_HEIGHT, IMG_WIDTH,
+            IMG_CHANNEL,
+        ),
     ) -> None:
         """Data augmentation layer.
 
@@ -181,8 +187,10 @@ class ImageClassification(tf.keras.Model):
     def __init__(
         self,
         n_classes: int = N_CLASSES,
-        input_shape: tuple[int, int, int] = (IMG_HEIGHT, IMG_WIDTH,
-                                             IMG_CHANNEL),
+        input_shape: tuple[int, int, int] = (
+            IMG_HEIGHT, IMG_WIDTH,
+            IMG_CHANNEL,
+        ),
         dropout: float = 0.2,
     ) -> None:
         super(ImageClassification, self).__init__()
@@ -204,7 +212,7 @@ class ImageClassification(tf.keras.Model):
     def call(
         self,
         inputs: tf.TensorArray,
-        training: bool = False
+        training: bool = False,
     ) -> tf.TensorArray:
         x = self.augmentation(inputs, training=training)
         for layer in self.conv_layers:
@@ -221,7 +229,7 @@ def inference(
     model: tf.keras.Model,
     img_path: str,
     class_names: list[str] = CLASS_NAMES,
-    target_size: tuple[int, int] = (IMG_HEIGHT, IMG_WIDTH)
+    target_size: tuple[int, int] = (IMG_HEIGHT, IMG_WIDTH),
 ) -> None:
     """Perform inference on image.
 
@@ -234,7 +242,7 @@ def inference(
             Defaults to (IMG_HEIGHT, IMG_WIDTH).
     """
     img = tf.keras.utils.load_img(
-        img_path, target_size=target_size
+        img_path, target_size=target_size,
     )
     img_arr = tf.keras.utils.img_to_array(img)
     img_arr = tf.expand_dims(img_arr, 0)  # Create a batch.
@@ -242,8 +250,10 @@ def inference(
     predictions = model.predict(img_arr)
     score = tf.nn.softmax(predictions[0])
 
-    print(f'This image is most likely to be {class_names[np.argmax(score)]}'
-          f' with a {np.max(score):.02%} confidence.')
+    print(
+        f'This image is most likely to be {class_names[np.argmax(score)]}'
+        f' with a {np.max(score):.02%} confidence.',
+    )
 
 
 def convert_to_tflite(
@@ -300,9 +310,11 @@ def inference_with_tflite(
     pred_lite = classify_lite(sequential_1_input=img_arr)['output']
     score_lite = tf.nn.softmax(pred_lite)
 
-    print('This image most likely belongs to '
-          f'{class_names[np.argmax(score_lite)]}'
-          f' with a {np.max(score_lite):.02%} confidence.')
+    print(
+        'This image most likely belongs to '
+        f'{class_names[np.argmax(score_lite)]}'
+        f' with a {np.max(score_lite):.02%} confidence.',
+    )
 
 
 def main() -> int:
@@ -317,12 +329,16 @@ def main() -> int:
     # print(class_names)
 
     # Pre-process data.
-    train_ds = (train_ds.cache()
-                .shuffle(1000)
-                .prefetch(buffer_size=tf.data.AUTOTUNE))
-    val_ds = (val_ds
-              .cache()
-              .prefetch(buffer_size=tf.data.AUTOTUNE))
+    train_ds = (
+        train_ds.cache()
+        .shuffle(1000)
+        .prefetch(buffer_size=tf.data.AUTOTUNE)
+    )
+    val_ds = (
+        val_ds
+        .cache()
+        .prefetch(buffer_size=tf.data.AUTOTUNE)
+    )
 
     # Visualize some training samples.
     visualize_data(train_ds, CLASS_NAMES)
@@ -335,14 +351,14 @@ def main() -> int:
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
         loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-        metrics=['accuracy']
+        metrics=['accuracy'],
     )
 
     # Train the model.
     history = model.fit(
         train_ds,
         validation_data=val_ds,
-        epochs=EPOCHS
+        epochs=EPOCHS,
     )
 
     # Visualize training history.
@@ -350,7 +366,7 @@ def main() -> int:
 
     # Perform inference.
     sunflower_path = tf.keras.utils.get_file(
-        'Red_sunflower', origin=SUNFLOWER_URL
+        'Red_sunflower', origin=SUNFLOWER_URL,
     )
     inference(model, sunflower_path, CLASS_NAMES)
 
@@ -358,9 +374,11 @@ def main() -> int:
     convert_to_tflite(model, TF_LITE_MODEL_PATH)
 
     # Perform inference with TF Lite.
-    inference_with_tflite(img_url=SUNFLOWER_URL,
-                          model_path=TF_LITE_MODEL_PATH,
-                          class_names=CLASS_NAMES)
+    inference_with_tflite(
+        img_url=SUNFLOWER_URL,
+        model_path=TF_LITE_MODEL_PATH,
+        class_names=CLASS_NAMES,
+    )
 
     return 0
 

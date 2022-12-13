@@ -11,14 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
 
 dataset, info = tfds.load(
-    'oxford_iiit_pet:3.*.*', data_dir='../../../data/', with_info=True
+    'oxford_iiit_pet:3.*.*', data_dir='../../../data/', with_info=True,
 )
 
 IMG_HEIGHT, IMG_WIDTH, IMG_CHANNEL = 128, 128, 3
@@ -39,16 +38,16 @@ class Augment(tf.keras.layers.Layer):
         super().__init__()
         # Both use the same seed, so they'll make the same random changes.
         self.augment_inputs = tf.keras.layers.RandomFlip(
-            mode='horizontal', seed=seed
+            mode='horizontal', seed=seed,
         )
         self.augment_labels = tf.keras.layers.RandomFlip(
-            mode='horizontal', seed=seed
+            mode='horizontal', seed=seed,
         )
 
     def call(
         self,
         inputs: tf.Tensor,
-        labels: tf.Tensor
+        labels: tf.Tensor,
     ) -> tuple[tf.Tensor, tf.Tensor]:
         inputs = self.augment_inputs(inputs)
         labels = self.augment_labels(labels)
@@ -58,7 +57,7 @@ class Augment(tf.keras.layers.Layer):
 
 def load_data(train: bool = True) -> tf.data.Dataset:
     images = dataset['train' if train else 'test'].map(
-        load_image, num_parallel_calls=tf.data.AUTOTUNE
+        load_image, num_parallel_calls=tf.data.AUTOTUNE,
     )
     if train:
         batches = (
@@ -77,7 +76,7 @@ def load_data(train: bool = True) -> tf.data.Dataset:
 
 def normalize(
     input_image: tf.Tensor,
-    input_mask: tf.Tensor
+    input_mask: tf.Tensor,
 ) -> tuple[tf.Tensor, tf.Tensor]:
     input_image = tf.cast(input_image, tf.float32) / 255.0
     input_mask -= 1
@@ -85,12 +84,16 @@ def normalize(
 
 
 def load_image(
-    datapoint: dict[str, tf.Tensor]
+    datapoint: dict[str, tf.Tensor],
 ) -> tuple[tf.Tensor, tf.Tensor]:
-    input_image = tf.image.resize(datapoint['image'],
-                                  (IMG_HEIGHT, IMG_WIDTH))
-    input_mask = tf.image.resize(datapoint['segmentation_mask'],
-                                 (IMG_HEIGHT, IMG_WIDTH))
+    input_image = tf.image.resize(
+        datapoint['image'],
+        (IMG_HEIGHT, IMG_WIDTH),
+    )
+    input_mask = tf.image.resize(
+        datapoint['segmentation_mask'],
+        (IMG_HEIGHT, IMG_WIDTH),
+    )
     input_image, input_mask = normalize(input_image, input_mask)
 
     return input_image, input_mask
@@ -120,12 +123,12 @@ def create_mask(pred_mask: tf.TensorArray) -> tf.TensorArray:
 class Encoder(tf.keras.layers.Layer):
     def __init__(
         self,
-        input_shape: tuple[int, int, int] = IMG_SHAPE
+        input_shape: tuple[int, int, int] = IMG_SHAPE,
     ) -> None:
         super(Encoder, self).__init__()
 
         model = tf.keras.applications.MobileNetV2(
-            input_shape=input_shape, include_top=False
+            input_shape=input_shape, include_top=False,
         )
 
         # Use the activations of these layers
@@ -137,10 +140,14 @@ class Encoder(tf.keras.layers.Layer):
             'block_16_project',      # 4x4
         ]
 
-        model_output = [model.get_layer(name).output
-                        for name in layer_names]
-        self.encoder_model = tf.keras.Model(inputs=model.input,
-                                            outputs=model_output)
+        model_output = [
+            model.get_layer(name).output
+            for name in layer_names
+        ]
+        self.encoder_model = tf.keras.Model(
+            inputs=model.input,
+            outputs=model_output,
+        )
         self.encoder_model.trainable = False
 
     def call(
@@ -165,16 +172,18 @@ class UNet(tf.keras.Model):
         self.concat = tf.keras.layers.Concatenate()
 
         # Decoder (upsampler).
-        self.decoder_stack = [tf.keras.Sequential([
-            tf.keras.layers.Conv2DTranspose(
-                filters, kernel_size=3, strides=2,
-                padding='same', use_bias=False,
-                kernel_initializer=initializer,
-            ),
-            tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Dropout(dropout),
-            tf.keras.layers.ReLU(),
-        ]) for filters in decoder_filters]
+        self.decoder_stack = [
+            tf.keras.Sequential([
+                tf.keras.layers.Conv2DTranspose(
+                    filters, kernel_size=3, strides=2,
+                    padding='same', use_bias=False,
+                    kernel_initializer=initializer,
+                ),
+                tf.keras.layers.BatchNormalization(),
+                tf.keras.layers.Dropout(dropout),
+                tf.keras.layers.ReLU(),
+            ]) for filters in decoder_filters
+        ]
 
         # Final (output) layer.
         self.output_layer = tf.keras.layers.Conv2DTranspose(
@@ -316,7 +325,7 @@ def main() -> int:
 
     def show_predictions(
         dataset: tf.dataset.Dataset | None = None,
-        num: int = 1
+        num: int = 1,
     ) -> None:
         if dataset:
             for image, mask in dataset.take(num):
