@@ -15,6 +15,8 @@
 -->
 # TensorFlow Playground
 
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/victor-iyi/tf-playground/master.svg)](https://results.pre-commit.ci/latest/github/victor-iyi/tf-playground/master)
+
 > This repository is developed for educational purposes using the official
 TensorFlow [tutorials] & [guides].
 
