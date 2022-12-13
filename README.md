@@ -15,7 +15,8 @@
 -->
 # TensorFlow Playground
 
-> This repository is developed for educational purposes using the official TensorFlow [tutorials] & [guides].
+> This repository is developed for educational purposes using the official
+TensorFlow [tutorials] & [guides].
 
 [tutorials]: https://www.tensorflow.org/tutorials
 [guides]: https://www.tensorflow.org/guide
@@ -23,11 +24,13 @@
 This consists of various Machine Learning algorithms and AI concepts developed
 with TensorFlow.
 
-Each task (or tutorial) has it's own Notebook or project files both as a Notebook and as a Python module.
+Each task (or tutorial) has it's own Notebook or project files both as a Notebook
+and as a Python module.
 
 ## Beginner
 
-The "Hello, World!" for Machine Learning to introduce the Keras Sequential API and `model.fit`.
+The "Hello, World!" for Machine Learning to introduce the Keras Sequential API
+and `model.fit`.
 
 - [ ] **ML basics with Keras**
 
@@ -51,7 +54,9 @@ The "Hello, World!" for Machine Learning to introduce the Keras Sequential API a
 
 ## Advanced
 
-This introduces more advanced TensorFlow concepts including model subclassing, custom training loops, custom layers, distributed training accross muultiple GPUs, multiple machines or TPUs.
+This introduces more advanced TensorFlow concepts including model subclassing,
+custom training loops, custom layers, distributed training accross muultiple GPUs,
+multiple machines or TPUs.
 
 - [ ] **Customization**
 
@@ -77,7 +82,6 @@ This introduces more advanced TensorFlow concepts including model subclassing, c
   - [ ] Video classification
   - [ ] Transfer lerarning with MoViNet
 
-
 - [ ] **Text**
   - [ ] Wordembeddings
   - [ ] Word2Vec
@@ -98,7 +102,6 @@ This introduces more advanced TensorFlow concepts including model subclassing, c
   - [ ] Decision forest models
   - [ ] Recommenders
 
-
 - [ ] **Generative**
   - [ ] Stable Diffusion
   - [ ] Neural Style Transfer
@@ -111,7 +114,6 @@ This introduces more advanced TensorFlow concepts including model subclassing, c
 - [ ] **Model optimization**
   - [ ] Scale mmodel compression with EPR
   - [ ] TensorFlow model optimization
-
 
 - [ ] **Model Understanding**
   - [ ] Integrated gradients
