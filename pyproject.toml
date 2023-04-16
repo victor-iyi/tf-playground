@@ -78,6 +78,8 @@ pytest-cov = { version = ">=4.0.0", optional = true }
 # Generic virtualenv management and test cli tool.
 tox = { version = ">=3.26.0", optional = true }
 
+[tool.poetry.extras]
+silicon = ["tensorflow-metal"]
 
 [tool.poetry.urls]
 "Bug Tracker"  = "https://github.com/victor-iyi/tf-playground/issues"
